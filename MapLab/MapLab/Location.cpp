@@ -12,7 +12,7 @@ Location::~Location()
 {
 }
 
-string Location::GetLocationInfo()
+string Location::GetLocationName()
 {
 	return _name;
 }

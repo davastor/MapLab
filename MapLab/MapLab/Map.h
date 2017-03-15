@@ -1,5 +1,7 @@
 #pragma once
 #include <string>
+#include <stack>
+#include <queue>
 #include "Location.h"
 using namespace std;
 
@@ -9,9 +11,12 @@ private:
 
 
 public:
-	Location *_currentLocation = nullptr;
+	Location *currentLocation = nullptr;
 	Map(string startingLocationName);
 	~Map();
+
+	stack <Location*> Path;
+	queue <Location*> Destination;
 
 	
 

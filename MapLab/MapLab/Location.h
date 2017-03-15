@@ -14,6 +14,6 @@ public:
 	Location *West = nullptr;
 	Location *East = nullptr;
 
-	string GetLocationInfo();
+	string GetLocationName();
 };
 

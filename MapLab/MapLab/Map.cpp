@@ -4,7 +4,8 @@
 
 Map::Map(string startingLocationName)
 {
-	_currentLocation = new Location(startingLocationName);
+	currentLocation = new Location(startingLocationName);
+	Path.push(currentLocation);
 }
 
 
