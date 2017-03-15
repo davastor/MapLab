@@ -149,7 +149,7 @@ void PathHome(Map & map)
 	cout << "You are now at " << map.currentLocation->GetLocationName() << endl;
 }
 
-void ToDestination(Map& map)
+void ToDestination(Map& map) // finish
 {
 	system("cls");
 	while (map.currentLocation->GetLocationName() != "Home")
