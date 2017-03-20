@@ -10,7 +10,7 @@ void GoSouth(Map &map);
 void GoEast(Map &map);
 void GoWest(Map &map);
 void PathHome(Map &map);
-
+void ToDestination(Map &map);
 
 int main()
 {
@@ -28,7 +28,8 @@ int main()
 		cout << "3) Go south" << endl;
 		cout << "4) Go west" << endl;
 		cout << "5) Go east" << endl;
-		cout << "6) Path to home" << endl;
+		cout << "6) Go home" << endl;
+		cout << "7) Find path to current location" << endl;
 		cin >> choice;
 
 		switch (choice)
@@ -53,6 +54,9 @@ int main()
 			break;
 		case 6:
 			PathHome(map);
+			break;
+		case 7:
+			ToDestination(map);
 			break;
 		default:
 			cout << "please enter a valid option" << endl;
@@ -88,7 +92,9 @@ void GoNorth(Map & map)
 void GoSouth(Map & map)
 {
 	system("cls");
-	if (map.currentLocation->South == nullptr)
+	map.yMinusOne();
+
+	if (map.Coordinates.find(map.getCoordinates()) == map.Coordinates.end())
 	{
 		cout << "You haven't been here before.  Enter a Name: ";
 		string newName;
@@ -152,10 +158,13 @@ void PathHome(Map & map)
 void ToDestination(Map& map) // finish
 {
 	system("cls");
-	while (map.currentLocation->GetLocationName() != "Home")
+	int i = 1;
+
+	while (map.Destination.front()->GetLocationName() != map.currentLocation->GetLocationName())
 	{
-		map.Path.pop();
-		map.currentLocation = map.Path.top();
+		
+		cout << i << ") " << map.Destination.front()->GetLocationName() << endl;
+		map.Destination.pop();
+		i++;
 	}
-	cout << "You are now at " << map.currentLocation->GetLocationName() << endl;
 }
