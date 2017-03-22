@@ -1,10 +1,14 @@
 #pragma once
 #include <string>
+#include <unordered_map>
+
 using namespace std;
 class Location
 {
 private:
 	string _name;
+
+
 public:
 	Location(string name);
 	~Location();
@@ -15,5 +19,7 @@ public:
 	Location *East = nullptr;
 
 	string GetLocationName();
+
+
 };
 

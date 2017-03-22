@@ -7,7 +7,6 @@ Location::Location(string name): _name(name)
 {
 }
 
-
 Location::~Location()
 {
 }

@@ -28,7 +28,7 @@ int main()
 		cout << "3) Go south" << endl;
 		cout << "4) Go west" << endl;
 		cout << "5) Go east" << endl;
-		cout << "6) Go home" << endl;
+		cout << "6) Find path home" << endl;
 		cout << "7) Find path to current location" << endl;
 		cin >> choice;
 
@@ -38,7 +38,7 @@ int main()
 			break;
 		case 1:
 			system("cls");
-			cout << "You are at: " << map.currentLocation->GetLocationName() << endl;
+			cout << "You are at: " << map.currentLocation->GetLocationName() + " (" + map.getCoordinates() + ")" << endl;
 			break;
 		case 2:
 			GoNorth(map);
@@ -74,17 +74,24 @@ int main()
 void GoNorth(Map & map)
 {
 	system("cls");
-	if (map.currentLocation->North == nullptr)
+	map.yPlusOne();
+
+	//map.Coordinates[map.getCoordinates()] 
+	if (map.Coordinates.find(map.getCoordinates()) == map.Coordinates.end())
 	{
 		cout << "You haven't been here before.  Enter a Name: ";
 		string newName;
 		cin >> newName;
 		map.currentLocation->North = new Location(newName);
+		map.Coordinates.insert(make_pair(map.getCoordinates(), map.currentLocation->North));
 		map.currentLocation->North->South = map.currentLocation;
 		
 	}
-	map.currentLocation = map.currentLocation->North;
-	cout << "You are now at " + map.currentLocation->GetLocationName() << endl;
+
+	map.it = map.Coordinates.find(map.getCoordinates());
+	map.currentLocation = map.it->second;
+	//map.currentLocation = map.currentLocation->North;
+	cout << "You are now at " + map.currentLocation->GetLocationName() + " (" + map.getCoordinates() + ")" << endl;
 	map.Path.push(map.currentLocation);
 	map.Destination.push(map.currentLocation);
 }
@@ -96,15 +103,21 @@ void GoSouth(Map & map)
 
 	if (map.Coordinates.find(map.getCoordinates()) == map.Coordinates.end())
 	{
+	
+		
 		cout << "You haven't been here before.  Enter a Name: ";
+		
 		string newName;
 		cin >> newName;
 		map.currentLocation->South = new Location(newName);
+		map.Coordinates.insert(make_pair(map.getCoordinates(), map.currentLocation->South));
 		map.currentLocation->South->North = map.currentLocation;
 
 	}
-	map.currentLocation = map.currentLocation->South;
-	cout << "You are now at " + map.currentLocation->GetLocationName() << endl;
+	map.it = map.Coordinates.find(map.getCoordinates());
+	map.currentLocation = map.it->second;
+	//map.currentLocation = map.currentLocation->South;
+	cout << "You are now at " + map.currentLocation->GetLocationName() + " (" + map.getCoordinates() + ")" << endl;
 	map.Path.push(map.currentLocation);
 	map.Destination.push(map.currentLocation);
 }
@@ -112,16 +125,21 @@ void GoSouth(Map & map)
 void GoEast(Map & map)
 {
 	system("cls");
-	if (map.currentLocation->East == nullptr)
+	map.xPlusOne();
+
+	if (map.Coordinates.find(map.getCoordinates()) == map.Coordinates.end())
 	{
 		cout << "You haven't been here before.  Enter a Name: ";
 		string newName;
 		cin >> newName;
 		map.currentLocation->East = new Location(newName);
+		map.Coordinates.insert(make_pair(map.getCoordinates(), map.currentLocation->East));
 		map.currentLocation->East->West = map.currentLocation;
 	}
-	map.currentLocation = map.currentLocation->East;
-	cout << "You are now at " + map.currentLocation->GetLocationName() << endl;
+	map.it = map.Coordinates.find(map.getCoordinates());
+	map.currentLocation = map.it->second;
+	//map.currentLocation = map.currentLocation->East;
+	cout << "You are now at " + map.currentLocation->GetLocationName() + " (" + map.getCoordinates() + ")" << endl;
 	map.Path.push(map.currentLocation);
 	map.Destination.push(map.currentLocation);
 }
@@ -129,17 +147,22 @@ void GoEast(Map & map)
 void GoWest(Map & map)
 {
 	system("cls");
-	if (map.currentLocation->West == nullptr)
+	map.xMinusOne();
+
+	if (map.Coordinates.find(map.getCoordinates()) == map.Coordinates.end())
 	{
 		cout << "You haven't been here before.  Enter a Name: ";
 		string newName;
 		cin >> newName;
 		map.currentLocation->West = new Location(newName);
+		map.Coordinates.insert(make_pair(map.getCoordinates(), map.currentLocation->West));
 		map.currentLocation->West->East = map.currentLocation;
 
 	}
-	map.currentLocation = map.currentLocation->West;
-	cout << "You are now at " + map.currentLocation->GetLocationName() << endl;
+	map.it = map.Coordinates.find(map.getCoordinates());
+	map.currentLocation = map.it->second;
+	//map.currentLocation = map.currentLocation->West;
+	cout << "You are now at " + map.currentLocation->GetLocationName()  + " (" + map.getCoordinates() + ")" << endl;
 	map.Path.push(map.currentLocation);
 	map.Destination.push(map.currentLocation);
 }
@@ -147,24 +170,40 @@ void GoWest(Map & map)
 void PathHome(Map & map)
 {
 	system("cls");
-	while (map.currentLocation->GetLocationName() != "Home")
+
+	if (map.currentLocation->GetLocationName() == "Home")
 	{
-		map.Path.pop();
-		map.currentLocation = map.Path.top();
+		cout << "You are already home." << endl;
+		
+		do {map.Path.pop();} while (map.Path.empty() != false);
 	}
-	cout << "You are now at " << map.currentLocation->GetLocationName() << endl;
+	else
+	{
+		map.setPathCopy();
+		cout << "Path to Home" << endl;
+		int i = 1;
+		while (map.PathCopy.top()->GetLocationName() != "Home")
+		{
+			map.PathCopy.pop();
+			cout << i << ")" << map.PathCopy.top()->GetLocationName() << endl;
+			i++;
+		}
+	}
 }
 
-void ToDestination(Map& map) // finish
+void ToDestination(Map& map) 
 {
 	system("cls");
 	int i = 1;
 
-	while (map.Destination.front()->GetLocationName() != map.currentLocation->GetLocationName())
+	map.setDestinationCopy();
+	cout << "Path to Current Location" << endl;
+	while (map.DestinationCopy.front()->GetLocationName() != map.currentLocation->GetLocationName())
 	{
 		
-		cout << i << ") " << map.Destination.front()->GetLocationName() << endl;
-		map.Destination.pop();
+		cout << i << ") " << map.DestinationCopy.front()->GetLocationName() << endl;
+		map.DestinationCopy.pop();
 		i++;
 	}
+	cout << i << ") " << map.currentLocation->GetLocationName() << endl;;
 }
